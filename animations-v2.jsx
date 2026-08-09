@@ -336,7 +336,7 @@ function Stage({
   loop = true,
   autoplay = true,
   playback = null,
-  persistKey = 'animstage',
+  persistKey = null,
   children,
 }) {
   width = +width || 1280; height = +height || 720;
@@ -347,6 +347,7 @@ function Stage({
   const loopEff = playback ? playback.mode === 'loop' : loop;
 
   const [time, setTime] = React.useState(() => {
+    if (!persistKey) return 0;
     try {
       const v = parseFloat(localStorage.getItem(persistKey + ':t') || '0');
       return isFinite(v) ? clamp(v, 0, duration) : 0;
@@ -364,6 +365,7 @@ function Stage({
   const lastTsRef = React.useRef(null);
 
   React.useEffect(() => {
+    if (!persistKey) return;
     try { localStorage.setItem(persistKey + ':t', String(time)); } catch {}
   }, [time, persistKey]);
 
