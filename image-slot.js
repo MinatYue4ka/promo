@@ -40,6 +40,14 @@
 
   function load() {
     if (loadP) return loadP;
+    if (!(window.__host && window.__host.writeFile)) {
+      loadP = Promise.resolve().then(() => {
+        tombstones.clear();
+        loaded = true;
+        subs.forEach((fn) => fn());
+      });
+      return loadP;
+    }
     loadP = fetch(STATE_FILE)
       .then((r) => (r.ok ? r.json() : null))
       .then((j) => {
